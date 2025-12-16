@@ -3,6 +3,7 @@ import { Shield } from 'lucide-react';
 import HeroSection from './components/HeroSection';
 import AnalyzeSection from './components/AnalyzeSection';
 import TransactionHistory from './components/TransactionHistory';
+import ExplainabilityDashboard from './components/ExplainabilityDashboard';
 import SecurityRecommendations from './components/SecurityRecommendations';
 import HowItWorks from './components/HowItWorks';
 import DetectionCriteria from './components/DetectionCriteria';
@@ -25,6 +26,7 @@ interface Transaction {
 
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   useEffect(() => {
     loadTransactions();
@@ -46,6 +48,10 @@ function App() {
     setTransactions(prev => [...newTransactions, ...prev]);
   };
 
+  const handleSelectTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <nav className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
@@ -58,6 +64,7 @@ function App() {
             <div className="flex space-x-6">
               <a href="#analyze" className="text-slate-300 hover:text-emerald-400 transition-colors">Analyze</a>
               <a href="#history" className="text-slate-300 hover:text-emerald-400 transition-colors">History</a>
+              <a href="#explainability" className="text-slate-300 hover:text-emerald-400 transition-colors">Explainability</a>
               <a href="#security" className="text-slate-300 hover:text-emerald-400 transition-colors">Security</a>
               <a href="#how-it-works" className="text-slate-300 hover:text-emerald-400 transition-colors">How It Works</a>
             </div>
@@ -72,10 +79,14 @@ function App() {
       </section>
 
       <section id="history" className="py-16 bg-slate-900/50">
-        <TransactionHistory transactions={transactions} />
+        <TransactionHistory transactions={transactions} onSelectTransaction={handleSelectTransaction} />
       </section>
 
-      <section id="criteria" className="py-16">
+      <section id="explainability" className="py-16">
+        <ExplainabilityDashboard transaction={selectedTransaction || undefined} />
+      </section>
+
+      <section id="criteria" className="py-16 bg-slate-900/50">
         <DetectionCriteria />
       </section>
 

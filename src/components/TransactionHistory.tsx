@@ -19,11 +19,17 @@ interface Transaction {
 
 interface TransactionHistoryProps {
   transactions: Transaction[];
+  onSelectTransaction?: (transaction: Transaction) => void;
 }
 
-export default function TransactionHistory({ transactions }: TransactionHistoryProps) {
+export default function TransactionHistory({ transactions, onSelectTransaction }: TransactionHistoryProps) {
   const [filter, setFilter] = useState<'all' | 'fraudulent' | 'safe'>('all');
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+
+  const handleSelectTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    onSelectTransaction?.(transaction);
+  };
 
   const filteredTransactions = useMemo(() => {
     if (filter === 'all') return transactions;
@@ -175,7 +181,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
                 {filteredTransactions.map((transaction) => (
                   <tr
                     key={transaction.id}
-                    onClick={() => setSelectedTransaction(transaction)}
+                    onClick={() => handleSelectTransaction(transaction)}
                     className="hover:bg-slate-700/30 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4 text-sm text-slate-300 font-mono">
